@@ -19,7 +19,6 @@ export const getStaticProps = async () => {
       allBooks,
       recoBooks,
     },
-    revalidate: 3, //ISR 방식, 3초 주기로 재생성 되도록 설정
   };
 };
 
