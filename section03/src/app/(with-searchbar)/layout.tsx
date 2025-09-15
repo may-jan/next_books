@@ -1,11 +1,10 @@
-import Searchbar from "../../components/searchbar";
+import { ReactNode } from "react";
+import SearchbarWrapper from "@/components/searchbarWrapper";
 
-export default function Layout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function Layout({ children }: { children: ReactNode }) {
   return (
     <div>
-      <Searchbar />
+      <SearchbarWrapper />
       {children}
     </div>
   );
