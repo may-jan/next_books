@@ -6,7 +6,8 @@ import { BookData } from "@/types";
 // (with-searchbar) > page.tsx > AllBooks 함수와 동일한 API를 호출
 async function Footer() {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book`
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book`,
+    { cache: "force-cache" }
   );
   if (!response.ok) {
     return <footer>제작 @jaeeun</footer>;

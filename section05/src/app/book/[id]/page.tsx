@@ -1,4 +1,15 @@
+import { notFound } from "next/navigation";
 import style from "./page.module.css";
+
+// 명시하지 않은 파라미터에 대한 페이지 생성 옵션
+// true : 기본값, dynamic하게 페이지 생성
+// false : NotFound 페이지로 이동
+export const dynamicParams = true;
+
+// 정적인 파라미터를 생성하는 함수
+export function generateStaticParams() {
+  return [{ id: "1" }, { id: "2" }, { id: "3" }];
+}
 
 export default async function Page({
   params,
@@ -11,6 +22,9 @@ export default async function Page({
     `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/${paramsId}`
   );
   if (!response.ok) {
+    if (response.status === 404) {
+      notFound();
+    }
     return <div>오류가 발생했습니다...</div>;
   }
 
