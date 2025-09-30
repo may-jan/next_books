@@ -2,13 +2,16 @@
 
 import { revalidatePath, revalidateTag } from "next/cache";
 
-export async function createReviewAction(formData: FormData) {
+export async function createReviewAction(_: any, formData: FormData) {
   const bookId = formData.get("bookId")?.toString();
   const content = formData.get("content")?.toString();
   const author = formData.get("author")?.toString();
 
   if (!bookId || !content || !author) {
-    return;
+    return {
+      status: false,
+      error: "리뷰 내용과 작성자를 입력해주세요",
+    };
   }
 
   try {
@@ -20,6 +23,10 @@ export async function createReviewAction(formData: FormData) {
       }
     );
     console.log(response.status);
+
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
 
     // revalidatePath - 넥스트 서버측에서 해당 경로를 자동으로 재생성 해줄 것을 요청
     // *주의* 서버측에서만 호출 가능, 해당 페이지와 관련된 모든 데이터 캐시와 풀라우트 캐시가 무효화 된다
@@ -38,8 +45,16 @@ export async function createReviewAction(formData: FormData) {
 
     // 5. 태그 기준, 데이터 캐시 재검증
     revalidateTag(`review-${bookId}`);
+
+    return {
+      status: true,
+      error: "",
+    };
   } catch (err) {
     console.error(err);
-    return;
+    return {
+      status: false,
+      error: `리뷰 저장에 실패했습니다 : ${err}`,
+    };
   }
 }
