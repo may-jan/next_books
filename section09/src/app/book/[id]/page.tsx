@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import style from "./page.module.css";
-import { ReviewData } from "@/types";
+import { BookData, ReviewData } from "@/types";
 import ReviewItem from "@/components/review-item";
 import ReviewEditor from "@/components/review-editor";
 import Image from "next/image";
@@ -8,11 +8,20 @@ import Image from "next/image";
 // 명시하지 않은 파라미터에 대한 페이지 생성 옵션
 // true : 기본값, dynamic하게 페이지 생성
 // false : NotFound 페이지로 이동
-export const dynamicParams = true;
+// export const dynamicParams = true;
 
-// 정적인 파라미터를 생성하는 함수
-export function generateStaticParams() {
-  return [{ id: "1" }, { id: "2" }, { id: "3" }];
+export async function generateStaticParams() {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book`
+  );
+
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
+
+  const books: BookData[] = await response.json();
+
+  return books.map((book) => ({ id: book.id.toString() }));
 }
 
 async function BookDetail({ bookId }: { bookId: string }) {
